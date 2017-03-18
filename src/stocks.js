@@ -1,7 +1,9 @@
 import {get} from 'axios'
 
+import config from '../config'
+
 export const getLastStockValues = (count = 20) => {
-  return get('http://localhost:8000', {params: {count}})
+  return get(config.STOCK_API_BASE_URL, {params: {count}})
   .then((response) => {
     if (response.status < 300) {
       return response.data

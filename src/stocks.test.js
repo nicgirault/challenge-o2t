@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {getLastStockValues} from './stocks'
+import config from '../config'
 
 beforeEach(() => {
   axios.get = jest.fn()
@@ -56,5 +57,17 @@ it('should request the stocks with a default count of 20', () => {
   .then(() => {
     expect(axios.get).toHaveBeenCalledTimes(1)
     expect(axios.get.mock.calls[0][1].params.count).toEqual(20)
+  })
+})
+
+it('should request the stocks with configured url', () => {
+  axios.get.mockReturnValueOnce(new Promise((resolve, reject) => {
+    return resolve({status: 200, data: []})
+  }))
+  return getLastStockValues()
+  .then(() => {
+    expect(axios.get).toHaveBeenCalledTimes(1)
+    expect(axios.get.mock.calls[0][0]).toEqual(config.STOCK_API_BASE_URL)
+    expect(config.STOCK_API_BASE_URL.length).toBeGreaterThan(0)
   })
 })
