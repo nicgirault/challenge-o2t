@@ -1,6 +1,7 @@
 import React from 'react'
 
 import O2tStocksSeriesTable from './components/o2t-stocks-series-table'
+import O2tStocksSeriesGraph from './components/o2t-stocks-series-graph'
 import {getLastStockValues} from './stocks'
 
 export default class AppContainer extends React.Component {
@@ -23,6 +24,10 @@ export default class AppContainer extends React.Component {
   render () {
     return (
       <div>
+        <O2tStocksSeriesGraph
+          seriesIds={this.getSeriesIds(this.state.stocksSeries)}
+          stocksSeries={this.state.stocksSeries}
+        />
         <O2tStocksSeriesTable
           seriesIds={this.getSeriesIds(this.state.stocksSeries)}
           stocksSeries={this.state.stocksSeries}

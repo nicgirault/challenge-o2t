@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.15.3",
+    "d3": "^4.7.3",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "regenerator-runtime": "^0.10.3"
