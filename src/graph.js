@@ -4,6 +4,7 @@ import {max} from 'd3-array'
 import {line} from 'd3-shape'
 import {axisLeft, axisBottom} from 'd3-axis'
 import {timeSecond} from 'd3-time'
+import {easeLinear} from 'd3-ease'
 import 'd3-transition'
 
 const yDomain = (seriesIds, stocksSeries) => {
@@ -76,14 +77,21 @@ export const init = (seriesIds, stocksSeries, options) => {
   })
 
   const updater = (newStockSeries) => {
+    x.domain([
+      newStockSeries[0].timestamp,
+      newStockSeries[newStockSeries.length - 1].timestamp
+    ])
     y.domain(yDomain(seriesIds, newStockSeries))
 
     const transition = graph.transition()
-    transition.select('.yAxis').duration(250).call(yAxis)
-
+    transition.select('.yAxis').duration(0).call(yAxis)
+    transition.select('.xAxis').duration(0).ease(easeLinear).call(xAxis)
     lines.forEach(([seriesId, line], index) => {
+      graph.select(`.line-${seriesId}`)
+        .datum(newStockSeries)
       transition.select(`.line-${seriesId}`)
-        .duration(250)
+        .duration(0)
+        .ease(easeLinear)
         .attr('d', line)
     })
   }
