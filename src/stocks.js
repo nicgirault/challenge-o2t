@@ -11,3 +11,10 @@ export const getLastStockValues = (count = 20) => {
     throw new Error(response.statusText)
   })
 }
+
+export const getSeriesIds = (stocksSeries) => {
+  if (stocksSeries.length === 0) {
+    return []
+  }
+  return Object.keys(stocksSeries[0].stocks)
+}

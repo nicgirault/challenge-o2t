@@ -3,7 +3,7 @@ import find from 'lodash/find'
 
 import O2tStocksSeriesTable from './components/o2t-stocks-series-table'
 import O2tStocksSeriesGraph from './components/o2t-stocks-series-graph'
-import {getLastStockValues} from './stocks'
+import {getLastStockValues, getSeriesIds} from './stocks'
 
 export default class AppContainer extends React.Component {
   constructor (props) {
@@ -34,12 +34,6 @@ export default class AppContainer extends React.Component {
     })
     .then(this.updateStocksSeries.bind(this))
   }
-  getSeriesIds (stocksSeries) {
-    if (stocksSeries.length === 0) {
-      return []
-    }
-    return Object.keys(stocksSeries[0].stocks)
-  }
   onValueUpdate (value, identifier) {
     this.setState({
       stocksSeries: this.state.stocksSeries.map((item) => {
@@ -57,11 +51,11 @@ export default class AppContainer extends React.Component {
     return (
       <div>
         <O2tStocksSeriesGraph
-          seriesIds={this.getSeriesIds(this.state.stocksSeries)}
+          seriesIds={getSeriesIds(this.state.stocksSeries)}
           stocksSeries={this.state.stocksSeries}
         />
         <O2tStocksSeriesTable
-          seriesIds={this.getSeriesIds(this.state.stocksSeries)}
+          seriesIds={getSeriesIds(this.state.stocksSeries)}
           stocksSeries={this.state.stocksSeries}
           onValueUpdate={this.onValueUpdate.bind(this)}
         />

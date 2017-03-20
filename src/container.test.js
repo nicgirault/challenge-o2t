@@ -22,10 +22,4 @@ describe('<AppContainer />', () => {
       expect(appContainer.state.stocksSeries).toEqual(stocksSeriesData)
     })
   })
-
-  it('should get the expected seriesIds', () => {
-    const appContainer = shallow(<AppContainer />).instance()
-    const seriesIds = appContainer.getSeriesIds(stocksSeriesData)
-    expect(seriesIds).toEqual(['NASDAQ', 'CAC40'])
-  })
 })
