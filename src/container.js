@@ -1,9 +1,8 @@
 import React from 'react'
-import find from 'lodash/find'
 
 import O2tStocksSeriesTable from './components/o2t-stocks-series-table'
 import O2tStocksSeriesGraph from './components/o2t-stocks-series-graph'
-import {getLastStockValues, getSeriesIds} from './stocks'
+import {getSeriesIds, updateStocksSeries} from './stocks'
 
 export default class AppContainer extends React.Component {
   constructor (props) {
@@ -13,26 +12,9 @@ export default class AppContainer extends React.Component {
     }
   }
   componentDidMount () {
-    return this.updateStocksSeries()
-  }
-  updateStocksSeries () {
-    return getLastStockValues()
-    .then((stocksSeries) => {
-      this.setState({
-        stocksSeries: stocksSeries.map((newItem) => {
-          const defaultItem = find(
-            this.state.stocksSeries,
-            (item) => item.index === newItem.index
-          )
-          if (defaultItem) {
-            return defaultItem
-          }
-          return newItem
-        })
-      })
-      return new Promise((resolve) => setTimeout(resolve, 1000))
+    return updateStocksSeries(this.state.stocksSeries, (stocksSeries) => {
+      this.setState({stocksSeries})
     })
-    .then(this.updateStocksSeries.bind(this))
   }
   onValueUpdate (value, identifier) {
     this.setState({

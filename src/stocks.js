@@ -1,4 +1,5 @@
 import {get} from 'axios'
+import find from 'lodash/find'
 
 import config from '../config'
 
@@ -17,4 +18,22 @@ export const getSeriesIds = (stocksSeries) => {
     return []
   }
   return Object.keys(stocksSeries[0].stocks)
+}
+
+export const updateStocksSeries = (oldStocksSeries, notifier) => {
+  getLastStockValues()
+  .then((newStocksSeries) => {
+    const mergedStocksSeries = newStocksSeries.map((newItem) => {
+      const item = find(
+        oldStocksSeries,
+        (oldItem) => oldItem.index === newItem.index
+      )
+      return item || newItem
+    })
+    notifier(mergedStocksSeries)
+    return new Promise((resolve) => setTimeout(() => resolve(mergedStocksSeries), 1000))
+  })
+  .then((mergedStocksSeries) => {
+    return updateStocksSeries(mergedStocksSeries, notifier)
+  })
 }
