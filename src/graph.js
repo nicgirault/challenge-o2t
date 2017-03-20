@@ -4,6 +4,7 @@ import {max} from 'd3-array'
 import {line} from 'd3-shape'
 import {axisLeft, axisBottom} from 'd3-axis'
 import {timeSecond} from 'd3-time'
+import 'd3-transition'
 
 const yDomain = (seriesIds, stocksSeries) => {
   return [
@@ -24,9 +25,8 @@ export const init = (seriesIds, stocksSeries, options) => {
     return null
   }
 
-  const margin = {top: 20, right: 20, bottom: 20, left: 20}
-  const width = options.width - margin.left - margin.right
-  const height = options.height - margin.top - margin.bottom
+  const width = options.width - options.marginLeft - options.marginRight
+  const height = options.height - options.marginTop - options.marginBottom
 
   const x = scaleTime()
     .domain([
@@ -43,25 +43,29 @@ export const init = (seriesIds, stocksSeries, options) => {
   const xAxis = axisBottom(x).ticks(timeSecond)
 
   const lines = seriesIds.map((seriesId) => {
-    return line()
+    return [seriesId, line()
       .x((d) => x(d.timestamp))
       .y((d) => y(d.stocks[seriesId]))
+    ]
   })
 
   const graph = select('svg')
     .attr('width', options.width)
     .attr('height', options.height)
   .append('g')
-    .attr('transform', `translate(${margin.left}, ${margin.top})`)
+    .attr('transform', `translate(${options.marginLeft}, ${options.marginTop})`)
 
   graph.append('g')
+    .attr('class', 'yAxis')
     .call(yAxis)
   graph.append('g')
     .attr('transform', `translate(0, ${height})`)
+    .attr('class', 'xAxis')
     .call(xAxis)
 
-  lines.forEach((line, index) => {
+  lines.forEach(([seriesId, line], index) => {
     graph.append('path')
+      .attr('class', `line-${seriesId}`)
       .datum(stocksSeries)
       .attr('fill', 'none')
       .attr('stroke', schemeCategory10[index % 10])
@@ -70,4 +74,19 @@ export const init = (seriesIds, stocksSeries, options) => {
       .attr('stroke-width', 1.5)
       .attr('d', line)
   })
+
+  const updater = (newStockSeries) => {
+    y.domain(yDomain(seriesIds, newStockSeries))
+
+    const transition = graph.transition()
+    transition.select('.yAxis').duration(250).call(yAxis)
+
+    lines.forEach(([seriesId, line], index) => {
+      transition.select(`.line-${seriesId}`)
+        .duration(250)
+        .attr('d', line)
+    })
+  }
+
+  return updater
 }

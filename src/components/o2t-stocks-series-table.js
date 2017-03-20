@@ -1,4 +1,5 @@
 import React from 'react'
+import O2tStocksValue from './o2t-stocks-value'
 
 export default class O2tStocksSeriesTable extends React.Component {
   renderStocksSeries (seriesId) {
@@ -7,7 +8,15 @@ export default class O2tStocksSeriesTable extends React.Component {
         <th>{seriesId}</th>
         {
           this.props.stocksSeries.map((item) => {
-            return <td key={item.timestamp}>{item.stocks[seriesId].toFixed(2)}</td>
+            return (
+              <td key={item.index}>
+                <O2tStocksValue
+                  value={item.stocks[seriesId]}
+                  identifier={{seriesId: seriesId, index: item.index}}
+                  onUpdate={this.props.onValueUpdate}
+                />
+              </td>
+            )
           })
         }
       </tr>
@@ -31,5 +40,6 @@ export default class O2tStocksSeriesTable extends React.Component {
 
 O2tStocksSeriesTable.propTypes = {
   seriesIds: React.PropTypes.array.isRequired,
-  stocksSeries: React.PropTypes.array.isRequired
+  stocksSeries: React.PropTypes.array.isRequired,
+  onValueUpdate: React.PropTypes.func.isRequired
 }
